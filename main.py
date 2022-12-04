@@ -15,7 +15,9 @@ SOURCE_TABLE_FILE = "html/style.html"
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
 ZONDA_API_KEY = os.environ.get("ZONDA_API_KEY")
 ZONDA_API_SECRET = os.environ.get("ZONDA_API_SECRET")
-EMAIL_ADDRESS = os.environ.get("EMAIL_ADDRESS")
+SENDER_EMAIL_ADDRESS = os.environ.get("SENDER_EMAIL_ADDRESS")
+RECEIVER_EMAIL_ADDRESS = os.environ.get(
+    "RECEIVER_EMAIL_ADDRESS") or SENDER_EMAIL_ADDRESS
 
 
 class MailData():
@@ -84,8 +86,8 @@ def main():
     sum_pln = mail.sumPLN()
 
     message = Mail(
-        from_email=EMAIL_ADDRESS,
-        to_emails=EMAIL_ADDRESS,
+        from_email=SENDER_EMAIL_ADDRESS,
+        to_emails=RECEIVER_EMAIL_ADDRESS,
         subject='Daily Crypto Raport',
         html_content="{} <h2> Total amount of PLN funds: {} </h2>".format(table, sum_pln))
 
