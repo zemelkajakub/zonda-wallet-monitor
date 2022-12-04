@@ -9,7 +9,9 @@ Currently it works only for PLN market. (Hope it's going to change soon:)
 
 ## Environment variables
 
-Fill .env file with Zonda API key, API secret, SendGrid API key, sender mail (SendGrid configured sender with API key permissions) and receiver email address. 
+Fill .env file with Zonda API key, API secret, SendGrid API key, sender mail (SendGrid configured sender with API key permissions) and receiver email address.
+
+If RECEIVER_EMAIL_ADDRESS variable will be empty, SENDER_EMAIL_ADDRESS value will be used instead.
 
 ## Docker Compose
 
