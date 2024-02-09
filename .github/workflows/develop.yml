@@ -10,7 +10,7 @@ on:
 
 
 jobs:
-  run:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,17 +27,12 @@ jobs:
             python -m pip install --upgrade pip
             pip install -r requirements.txt
 
-      - name: Run main.py
+      - name: Run script
         env:
             SENDER_EMAIL_ADDRESS: ${{ vars.SENDER_EMAIL_ADDRESS }}
             SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
             ZONDA_API_KEY: ${{ secrets.ZONDA_API_KEY }}
             ZONDA_API_SECRET: ${{ secrets.ZONDA_API_SECRET }}
         run: |
-            echo "before pushd ls"
-            ls -l
-            echo "#################"
-            echo "after pushd ls"
-            pushd app
-            ls
-#            python app/main.py
+            echo` "Executing main.py"
+            python main.py
