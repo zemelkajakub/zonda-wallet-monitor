@@ -35,4 +35,5 @@ jobs:
             ZONDA_API_SECRET: ${{ secrets.ZONDA_API_SECRET }}
         run: |
             echo "Executing main.py..."
+            pushd app
             python main.py
