@@ -7,7 +7,7 @@ import uuid
 import json
 
 
-class ApiConnection:
+class ApiConnection(object):
 
     uid = str(uuid.uuid4())
     timestamp = str(time.time()).split('.')[0]

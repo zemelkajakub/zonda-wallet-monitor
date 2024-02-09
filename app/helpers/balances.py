@@ -1,13 +1,12 @@
 from helpers.ApiConnection import ApiConnection
-import requests
-import json
+from typing import Dict
 
 
-def getOwnedCurrencies(url, apiKey, apiSecret):
+def get_owned_currencies(data: ApiConnection) -> Dict[str, float]:
 
     ownedCrypto = {}
 
-    data = ApiConnection(url, apiKey, apiSecret)
+    # data = ApiConnection(url, apiKey, apiSecret)
     currencyList = data.getData()
     currencies = currencyList['balances']
 
@@ -24,7 +23,7 @@ def getOwnedCurrencies(url, apiKey, apiSecret):
     return ownedCrypto
 
 
-def getPlnMarket(owned_currencies):
+def get_pln_market(owned_currencies):
 
     markets = []
     owned_currencies = owned_currencies
