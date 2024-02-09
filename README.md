@@ -1,4 +1,6 @@
-# Wallet Monitor
+# Zonda Wallet Monitor - Mailer
+
+by @zemelkajakub
 
 ## Usage
 
