@@ -11,6 +11,10 @@ class Settings(BaseSettings):
     SENDGRID_API_KEY: str = os.environ.get("SENDGRID_API_KEY")
     ZONDA_API_KEY: str = os.environ.get("ZONDA_API_KEY")
     ZONDA_API_SECRET: str = os.environ.get("ZONDA_API_SECRET")
+    MARKET_CURRENCY: str = os.environ.get("MARKET_CURRENCY", "PLN")
 
     class Config:
         env_file = ".env"
+
+
+settings = Settings()
