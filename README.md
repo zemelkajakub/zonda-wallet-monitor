@@ -11,6 +11,7 @@ The `app/settings/settings.py` file contains the following variables that can be
 - `ZONDA_API_SECRET`: Secret for you personal Zonda API key.
 - `SENDER_EMAIL_ADDRESS`: The email address from which email will be sent.
 - `RECEIVER_EMAIL_ADDRESS`: The email address to which email will be sent. If not set, then SENDER_EMAIL_ADDRESS will be used.
+- `MARKET_CURRENCY`: Currency of the market you want to raport. E.g. PLN
 
 Make sure to set these variables according to your environment before running the application.
 
@@ -41,6 +42,7 @@ To run the application using GitHub Actions, follow these steps:
 4. Add the following variables
 - `SENDER_EMAIL_ADDRESS`: The email address from which email will be sent.
 - `RECEIVER_EMAIL_ADDRESS`: The email address to which email will be sent. If not set, then SENDER_EMAIL_ADDRESS will be used.
+- `MARKET_CURRENCY`: Currency of the market you want to raport. E.g. PLN
 
 5. Commit and push any changes to trigger the GitHub Actions workflow. By default pipeline runs on 11:30 AM everyday. 
 6. The application will be automatically built and deployed using the provided secrets.

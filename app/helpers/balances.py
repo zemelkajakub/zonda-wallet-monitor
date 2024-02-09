@@ -1,13 +1,11 @@
 from helpers.ApiConnection import ApiConnection
 from typing import Dict
-from app.settings import settings
+from settings.settings import settings
 
 
 def get_owned_currencies(data: ApiConnection) -> Dict[str, float]:
 
     ownedCrypto = {}
-
-    # data = ApiConnection(url, apiKey, apiSecret)
     currencyList = data.getData()
     currencies = currencyList['balances']
 
