@@ -1,7 +1,7 @@
-from helpers.balances import get_owned_currencies, get_pln_market
+from helpers.balances import get_owned_currencies, get_market
 from helpers.trading import get_trading
 from helpers.ApiConnection import ApiConnection
-from settings.settings import Settings
+from settings.settings import settings
 import pandas as pd
 import re
 import css_inline
@@ -47,7 +47,7 @@ def getCryptoStats(trading_data: ApiConnection, balances_data: ApiConnection) ->
 
     owned_currencies = get_owned_currencies(balances_data)
     trading = get_trading(trading_data)
-    markets = get_pln_market(owned_currencies)
+    markets = get_market(owned_currencies)
 
     for market in markets:
 
@@ -70,10 +70,14 @@ def getCryptoStats(trading_data: ApiConnection, balances_data: ApiConnection) ->
 
 def main():
 
-    settings = Settings()
+    url_balances = settings.URL_BALANCES
+    url_trading = settings.URL_TRADING
+    zonda_api_key = settings.ZONDA_API_KEY
+    zonda_api_secret = settings.ZONDA_API_SECRET
+    sendgrid_api_key = settings.SENDGRID_API_KEY
 
-    balances_data = ApiConnection(settings.URL_BALANCES, settings.ZONDA_API_KEY, settings.ZONDA_API_SECRET)
-    trading_data = ApiConnection(settings.URL_TRADING, settings.ZONDA_API_KEY, settings.ZONDA_API_SECRET)
+    balances_data = ApiConnection(url_balances, zonda_api_key, zonda_api_secret)
+    trading_data = ApiConnection(url_trading, zonda_api_key, zonda_api_secret)
 
     statsData = getCryptoStats(balances_data=balances_data, trading_data=trading_data)
     mail = MailData(statsData)
@@ -89,7 +93,7 @@ def main():
 
     try:
 
-        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+        sg = SendGridAPIClient(sendgrid_api_key)
         response = sg.send(message)
 
     except Exception as e:

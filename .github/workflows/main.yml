@@ -33,6 +33,7 @@ jobs:
             SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
             ZONDA_API_KEY: ${{ secrets.ZONDA_API_KEY }}
             ZONDA_API_SECRET: ${{ secrets.ZONDA_API_SECRET }}
+            MARKET_CURRENCY: ${{ vars.MARKET_CURRENCY }}
         run: |
             echo "Executing main.py..."
             pushd app
