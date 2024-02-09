@@ -14,13 +14,14 @@ SOURCE_TABLE_FILE = "html/style.html"
 
 class MailData():
 
-    def __init__(self, stats):
+    def __init__(self, stats, market_currency):
         self.stats = stats
+        self.market_currency = market_currency.lower()
 
     def convertToMailHTML(self):
 
         data_frame = pd.DataFrame(self.stats)
-        data_frame = data_frame.sort_values(by=['pln'], ascending=False)
+        data_frame = data_frame.sort_values(by=[self.market_currency], ascending=False)
 
         table_html = data_frame.to_html(index=False, border=1)
 
@@ -32,22 +33,24 @@ class MailData():
 
         return converted_mail_table
 
-    def sumPLN(self):
+    def sumFunds(self):
 
         df = pd.DataFrame(self.stats)
-        summary = df['pln'].sum()
+        summary = df[self.market_currency].sum()
         summary = round(float(summary), 2)
 
         return summary
 
 
-def getCryptoStats(trading_data: ApiConnection, balances_data: ApiConnection) -> List:
+def getCryptoStats(trading_data: ApiConnection, balances_data: ApiConnection, market_currency: str) -> List:
 
     statsArray = []
 
     owned_currencies = get_owned_currencies(balances_data)
     trading = get_trading(trading_data)
     markets = get_market(owned_currencies)
+
+    market_currency = market_currency.lower()
 
     for market in markets:
 
@@ -56,12 +59,12 @@ def getCryptoStats(trading_data: ApiConnection, balances_data: ApiConnection) ->
 
         funds = owned_currencies[currency]
 
-        plnFloat = float(funds) * float(rate)
-        pln = round(plnFloat, 2)
+        market_currency_float = float(funds) * float(rate)
+        market_currency_amount = round(market_currency_float, 2)
 
         marketFormatted = re.sub(r'-', ' - ', market)
         currencyStats = {"name": currency, "market": marketFormatted,
-                         "funds": funds, "rate": rate, "pln": pln}
+                         "funds": funds, "rate": rate, str(market_currency): market_currency_amount}
 
         statsArray.append(currencyStats)
 
@@ -75,21 +78,22 @@ def main():
     zonda_api_key = settings.ZONDA_API_KEY
     zonda_api_secret = settings.ZONDA_API_SECRET
     sendgrid_api_key = settings.SENDGRID_API_KEY
+    market_currency = settings.MARKET_CURRENCY
 
     balances_data = ApiConnection(url_balances, zonda_api_key, zonda_api_secret)
     trading_data = ApiConnection(url_trading, zonda_api_key, zonda_api_secret)
 
-    statsData = getCryptoStats(balances_data=balances_data, trading_data=trading_data)
-    mail = MailData(statsData)
+    statsData = getCryptoStats(balances_data=balances_data, trading_data=trading_data, market_currency=market_currency)
+    mail = MailData(statsData, market_currency=market_currency)
 
     table = mail.convertToMailHTML()
-    sum_pln = mail.sumPLN()
+    sum_funds = mail.sumFunds()
 
     message = Mail(
         from_email=settings.SENDER_EMAIL_ADDRESS,
         to_emails=settings.RECEIVER_EMAIL_ADDRESS,
         subject='Daily Crypto Raport',
-        html_content="{} <h2> Total amount of PLN: {} </h2>".format(table, sum_pln))
+        html_content="{} <h2> Total amount of {}: {} </h2>".format(table, market_currency, sum_funds))
 
     try:
 
