@@ -4,7 +4,7 @@
 
 ### Configuration Variables
 
-The `app/settings/settings.py` file contains the following variables that can be configured from environment variables:
+The `app/settings/settings.py` file contains the following variables that can delivered from environment variables or `app/.env` file:
 
 - `SENDGRID_API_KEY`: The API key used for authentication to SendGrid - requires an account 
 - `ZONDA_API_KEY`: Your personal Zonda API key. It is recomennded to limit permission for that particular key.
