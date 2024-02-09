@@ -29,7 +29,7 @@ jobs:
 
       - name: Run main.py
         env:
-            SENDER_EMAIL_ADDRESS: ${{ variables.SENDER_EMAIL_ADDRESS }}
+            SENDER_EMAIL_ADDRESS: ${{ vars.SENDER_EMAIL_ADDRESS }}
             SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
             ZONDA_API_KEY: ${{ secrets.ZONDA_API_KEY }}
             ZONDA_API_SECRET: ${{ secrets.ZONDA_API_SECRET }}
