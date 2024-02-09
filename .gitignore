@@ -1,2 +1,6 @@
-test
-html/__pycache__
+app/html/__pycache__
+app/helpers/__pycache__
+app/settings/__pycache__
+.env
+.env2
+.venv

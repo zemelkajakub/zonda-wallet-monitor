@@ -1,23 +1,15 @@
-from helpers.balances import getOwnedCurrencies, getPlnMarket
-from helpers.trading import getTrading
+from helpers.balances import get_owned_currencies, get_pln_market
+from helpers.trading import get_trading
+from helpers.ApiConnection import ApiConnection
+from settings.settings import Settings
 import pandas as pd
-import numpy as np
 import re
-import os
 import css_inline
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+from typing import List
 
-URL_TRADING = "https://api.zonda.exchange/rest/trading/ticker"
-URL_BALANCES = "https://api.zonda.exchange/rest/balances/BITBAY/balance"
 SOURCE_TABLE_FILE = "html/style.html"
-
-SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
-ZONDA_API_KEY = os.environ.get("ZONDA_API_KEY")
-ZONDA_API_SECRET = os.environ.get("ZONDA_API_SECRET")
-SENDER_EMAIL_ADDRESS = os.environ.get("SENDER_EMAIL_ADDRESS")
-RECEIVER_EMAIL_ADDRESS = os.environ.get(
-    "RECEIVER_EMAIL_ADDRESS") or SENDER_EMAIL_ADDRESS
 
 
 class MailData():
@@ -49,14 +41,13 @@ class MailData():
         return summary
 
 
-def getCryptoStats():
+def getCryptoStats(trading_data: ApiConnection, balances_data: ApiConnection) -> List:
 
     statsArray = []
 
-    owned_currencies = getOwnedCurrencies(
-        URL_BALANCES, ZONDA_API_KEY, ZONDA_API_SECRET)
-    trading = getTrading(URL_TRADING, ZONDA_API_KEY, ZONDA_API_SECRET)
-    markets = getPlnMarket(owned_currencies)
+    owned_currencies = get_owned_currencies(balances_data)
+    trading = get_trading(trading_data)
+    markets = get_pln_market(owned_currencies)
 
     for market in markets:
 
@@ -79,26 +70,37 @@ def getCryptoStats():
 
 def main():
 
-    statsData = getCryptoStats()
+    settings = Settings()
+
+    balances_data = ApiConnection(settings.URL_BALANCES, settings.ZONDA_API_KEY, settings.ZONDA_API_SECRET)
+    trading_data = ApiConnection(settings.URL_TRADING, settings.ZONDA_API_KEY, settings.ZONDA_API_SECRET)
+
+    statsData = getCryptoStats(balances_data=balances_data, trading_data=trading_data)
     mail = MailData(statsData)
 
     table = mail.convertToMailHTML()
     sum_pln = mail.sumPLN()
 
     message = Mail(
-        from_email=SENDER_EMAIL_ADDRESS,
-        to_emails=RECEIVER_EMAIL_ADDRESS,
+        from_email=settings.SENDER_EMAIL_ADDRESS,
+        to_emails=settings.RECEIVER_EMAIL_ADDRESS,
         subject='Daily Crypto Raport',
-        html_content="{} <h2> Total amount of PLN funds: {} </h2>".format(table, sum_pln))
+        html_content="{} <h2> Total amount of PLN: {} </h2>".format(table, sum_pln))
 
     try:
 
-        sg = SendGridAPIClient(SENDGRID_API_KEY)
+        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
         response = sg.send(message)
 
     except Exception as e:
 
-        print(e.message)
+        raise e
+    
+    finally:
+
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
 
 
 if __name__ == "__main__":

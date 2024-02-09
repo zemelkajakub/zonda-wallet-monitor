@@ -1,13 +1,17 @@
-FROM ubuntu:20.04
+FROM python:3.10
+
+COPY app /app
+COPY .env /app/.env
+COPY requirements.txt /app/requirements.txt
+COPY entrypoint.sh /entrypoint.sh
 
 WORKDIR /app
 
-COPY . .
-
-RUN apt update 
+RUN DEBIAN_FRONTEND=noninteractive apt update && apt upgrade -y
 
 RUN apt install python3-pip -y && \
     pip install --upgrade pip && \
-    pip install -r requirements.txt
+    pip install -r /app/requirements.txt && \
+    chmod +x /entrypoint.sh
 
-ENTRYPOINT ["/usr/bin/python3", "main.py"]
+ENTRYPOINT [ "/bin/bash", "/entrypoint.sh" ]

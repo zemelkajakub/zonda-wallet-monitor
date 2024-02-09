@@ -1,4 +1,6 @@
-test
 Dockerfile
 docker-compose.yml
-.env
+README.md
+.gitignore
+.venv
+.env.example
